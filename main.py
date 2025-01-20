@@ -1,8 +1,8 @@
 """
 main.py
 
-Главный запускной скрипт Kivy-приложения. Управляет ScreenManager'ом
-и инициализацией/закрытием базы данных.
+Главный скрипт, запускающий Kivy-приложение.
+Загружает kv-файл, создает ScreenManager, подключает базу данных.
 """
 
 import kivy
@@ -16,7 +16,8 @@ import database
 from screens.viewer_screen import ViewerScreen
 from screens.editor_screen import EditorScreen
 
-Builder.load_file('ui.kv')  # Подгружаем kv-разметку
+# Грузим kv-разметку
+Builder.load_file('ui.kv')
 
 class TarotScreenManager(ScreenManager):
     pass
@@ -27,14 +28,11 @@ class TarotApp(App):
         database.init_db()
 
         sm = TarotScreenManager()
-        # Добавляем экраны
         sm.add_widget(ViewerScreen(name='viewer'))
         sm.add_widget(EditorScreen(name='editor'))
-
         return sm
 
     def on_stop(self):
-        # Закрываем базу перед выходом
         database.close_db()
 
 if __name__ == '__main__':

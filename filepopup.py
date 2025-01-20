@@ -1,7 +1,7 @@
 """
 filepopup.py
 
-Окно Popup с FileChooser для выбора файла.
+Окно Popup c FileChooser для выбора изображения.
 """
 
 from kivy.uix.popup import Popup
@@ -11,10 +11,6 @@ from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 
 class FileChooserPopup(Popup):
-    """
-    Небольшое всплывающее окно для выбора файла.
-    По нажатию "Выбрать" вызывает select_callback с путём к файлу.
-    """
     file_chooser = ObjectProperty(None)
     select_callback = ObjectProperty(None)
 

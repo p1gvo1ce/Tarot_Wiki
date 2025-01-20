@@ -1,4 +1,5 @@
 #:kivy 2.1.0
+#:import FlowLayout flowlayout.FlowLayout
 
 <TarotScreenManager>:
     ViewerScreen:
@@ -9,105 +10,153 @@
 <ViewerScreen>:
     BoxLayout:
         orientation: 'vertical'
-        spacing: '10dp'
         padding: '10dp'
+        spacing: '10dp'
         canvas.before:
             Color:
-                rgba: 0.1, 0.1, 0.1, 1  # Тёмно-серый фон
+                rgba: 0.1, 0.1, 0.1, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        # Выбор колоды
+        # --- Верхняя панель (выбор колоды) ---
         BoxLayout:
+            orientation: 'horizontal'
+            spacing: '5dp'
             size_hint_y: None
             height: '40dp'
+
             Label:
                 text: "Выберите колоду:"
                 color: 1,1,1,1
+                size_hint_x: None
+                width: self.texture_size[0] + 10
+
             Spinner:
                 text: root.selected_deck if root.selected_deck else "..."
                 values: root.available_decks
                 on_text: root.select_deck(self.text)
-                background_color: 0.3,0.3,0.3,1
+                size_hint: (None, None)
+                size: (180, 40)
+                background_color: 0.3, 0.3, 0.3, 1
 
-        Label:
-            text: "Козыри / Старшие арканы:"
+        # --- FlowLayout для всех 5 групп карт ---
+        FlowLayout:
+            orientation: 'lr-tb'
+            spacing: 5
             size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.arcana_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            height: self.minimum_height
 
-        Label:
-            text: "Жезлы:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.wands_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Козыри
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Козыри:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.arcana_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Мечи:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.swords_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Жезлы
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Жезлы:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.wands_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Чаши:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.cups_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Мечи
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Мечи:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.swords_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Пентакли:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.pentacles_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Чаши
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Чаши:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.cups_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        # Показываем картинку + описание
+            # Пентакли
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Пентакли:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.pentacles_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
+
+        # --- Центральная часть (картинка + описание) ---
         BoxLayout:
             orientation: 'horizontal'
-            spacing: '5dp'
+            spacing: '10dp'
+            size_hint_y: 1
 
             Image:
                 source: root.card_image
                 size_hint_x: 0.4
                 allow_stretch: True
+                keep_ratio: True
 
             ScrollView:
                 size_hint_x: 0.6
+                bar_width: 10
                 Label:
                     text: root.card_description
                     color: 1,1,1,1
@@ -115,19 +164,21 @@
                     size_hint_y: None
                     height: self.texture_size[1]
 
-        # Кнопка перехода в редактор
-        Button:
-            text: "Перейти к редактору"
+        # --- Нижняя кнопка ---
+        BoxLayout:
             size_hint_y: None
             height: '40dp'
-            on_release: app.root.current = "editor"
+            padding: '10dp'
+            Button:
+                text: "Перейти к редактору"
+                on_release: app.root.current = "editor"
 
 
 <EditorScreen>:
     BoxLayout:
         orientation: 'vertical'
-        spacing: '10dp'
         padding: '10dp'
+        spacing: '10dp'
         canvas.before:
             Color:
                 rgba: 0.15, 0.15, 0.15, 1
@@ -135,94 +186,144 @@
                 pos: self.pos
                 size: self.size
 
+        # Верхняя панель (название колоды)
         BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
             height: '40dp'
+            spacing: '5dp'
             Label:
                 text: "Название колоды:"
                 color: 1,1,1,1
+                size_hint_x: None
+                width: self.texture_size[0] + 10
             TextInput:
                 text: root.deck_input
                 multiline: False
                 on_text: root.deck_input = self.text
 
-        Label:
-            text: "Козыри:"
+        # FlowLayout для спиннеров 5 мастей
+        FlowLayout:
+            orientation: 'lr-tb'
+            spacing: 5
             size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.arcana_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            height: self.minimum_height
 
-        Label:
-            text: "Жезлы:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.wands_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Козыри
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Козыри:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.arcana_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Мечи:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.swords_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Жезлы
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Жезлы:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.wands_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Чаши:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.cups_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Мечи
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Мечи:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.swords_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Пентакли:"
-            size_hint_y: None
-            height: '30dp'
-            color: 1,1,1,1
-        Spinner:
-            text: "Выберите карту"
-            values: root.pentacles_options
-            on_text: root.on_card_select(self.text)
-            background_color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: '40dp'
+            # Чаши
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Чаши:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.cups_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
-        Label:
-            text: "Описание:"
-            color: 1,1,1,1
-            size_hint_y: None
-            height: '30dp'
-        TextInput:
-            text: root.card_description
-            on_text: root.card_description = self.text
-            size_hint_y: 0.3
-            multiline: True
+            # Пентакли
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (None, None)
+                spacing: 5
+                height: 40
+                width: self.minimum_width
+                Label:
+                    text: "Пентакли:"
+                    color: 1,1,1,1
+                    size_hint_x: None
+                    width: self.texture_size[0] + 10
+                Spinner:
+                    text: "Выберите карту"
+                    values: root.pentacles_options
+                    on_text: root.on_card_select(self.text)
+                    size_hint: (None, None)
+                    size: (150, 40)
 
+        # Поле описания
         BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: '150dp'
+            spacing: '5dp'
+            Label:
+                text: "Описание:"
+                color: 1,1,1,1
+                size_hint_y: None
+                height: '30dp'
+            TextInput:
+                text: root.card_description
+                on_text: root.card_description = self.text
+                multiline: True
+                size_hint_y: 1
+
+        # Кнопки выбора картинки и сохранения
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
             height: '40dp'
             spacing: '5dp'
@@ -233,6 +334,7 @@
                 text: "Сохранить"
                 on_release: root.save_card()
 
+        # Строка с путём к изображению
         BoxLayout:
             size_hint_y: None
             height: '30dp'
@@ -243,8 +345,11 @@
                 text: root.image_path if root.image_path else "Нет файла"
                 color: 1,1,1,1
 
-        Button:
-            text: "Вернуться к просмотру"
+        # Нижняя панель (кнопка)
+        BoxLayout:
             size_hint_y: None
             height: '40dp'
-            on_release: app.root.current = "viewer"
+            spacing: '5dp'
+            Button:
+                text: "Вернуться к просмотру"
+                on_release: app.root.current = "viewer"

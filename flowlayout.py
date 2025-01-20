@@ -33,34 +33,29 @@ class FlowLayout(Layout):
         )
 
     def do_layout(self, *args):
-        # Начальные координаты для размещения виджетов
         x_off = self.x
         y_off = self.top
         line_max_height = 0
         total_height = 0
 
         for child in reversed(self.children):
-            if child.disabled:  # Проверяем, отключён ли виджет
+            # Учитываем только видимые/имеющие размер виджеты
+            if not child.size_hint_x and not child.size:
                 continue
 
             cw, ch = child.size
 
-            # Проверяем, уместится ли новый виджет в текущей строке
             if x_off + cw > self.right:
-                # Перенос на следующую строку
                 x_off = self.x
                 y_off -= line_max_height + self.spacing[1]
                 total_height += line_max_height + self.spacing[1]
                 line_max_height = 0
 
-            # Располагаем child
             child.pos = (x_off, y_off - ch)
             x_off += cw + self.spacing[0]
 
-            # Запоминаем максимальную высоту строки
             if ch > line_max_height:
                 line_max_height = ch
 
-        # Добавляем высоту последней строки
         total_height += line_max_height
         self.minimum_height = total_height

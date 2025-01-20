@@ -64,7 +64,11 @@ class EditorScreen(Screen):
             os.makedirs(target_dir)
 
         filename = os.path.basename(file_path)
-        new_path = os.path.join(target_dir, filename)
+        # Получаем расширение файла (например, .png)
+        file_ext = os.path.splitext(filename)[1]
+        # Формируем новое имя файла с учётом колоды и карты
+        new_filename = f"{self.deck_input} {self.card_name}{file_ext}"
+        new_path = os.path.join(target_dir, new_filename)
 
         try:
             with open(file_path, 'rb') as src, open(new_path, 'wb') as dst:

@@ -1,0 +1,124 @@
+"""
+database.py
+
+Модуль для управления базой данных (SQLite), создания таблиц,
+и CRUD-функций по колодам и картам.
+"""
+
+import sqlite3
+from typing import Optional
+
+_conn: Optional[sqlite3.Connection] = None
+
+def init_db():
+    """
+    Создаёт (если нет) и открывает базу tarot_data.db,
+    а также создаёт нужные таблицы decks и cards.
+    """
+    global _conn
+    _conn = sqlite3.connect('tarot_data.db')
+    cursor = _conn.cursor()
+
+    # Таблица колод
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS decks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
+        );
+    ''')
+
+    # Таблица карт
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS cards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            deck_id INTEGER NOT NULL,
+            card_name TEXT NOT NULL,
+            description TEXT,
+            image_path TEXT,
+            FOREIGN KEY(deck_id) REFERENCES decks(id)
+        );
+    ''')
+
+    _conn.commit()
+
+def get_connection() -> sqlite3.Connection:
+    if _conn is None:
+        raise ConnectionError("База не инициализирована! Сначала вызовите init_db().")
+    return _conn
+
+def close_db():
+    global _conn
+    if _conn:
+        _conn.close()
+        _conn = None
+
+def create_deck(deck_name: str) -> int:
+    """
+    Создаёт новую колоду (или игнорирует, если такая уже есть).
+    Возвращает lastrowid, если новая колода создана, иначе 0.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR IGNORE INTO decks(name) VALUES(?);", (deck_name,))
+    conn.commit()
+    return cursor.lastrowid
+
+def get_deck_id(deck_name: str) -> Optional[int]:
+    """
+    Возвращает id колоды по названию (или None).
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM decks WHERE name=?;", (deck_name,))
+    row = cursor.fetchone()
+    return row[0] if row else None
+
+def create_or_update_card(deck_id: int, card_name: str, description: str, image_path: str) -> int:
+    """
+    Если карта уже есть, делаем UPDATE, иначе INSERT.
+    Возвращает id карты.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id FROM cards WHERE deck_id=? AND card_name=?
+    """, (deck_id, card_name))
+    row = cursor.fetchone()
+    if row:
+        card_id = row[0]
+        cursor.execute("""
+            UPDATE cards
+            SET description=?, image_path=?
+            WHERE id=?
+        """, (description, image_path, card_id))
+    else:
+        cursor.execute("""
+            INSERT INTO cards(deck_id, card_name, description, image_path)
+            VALUES(?, ?, ?, ?)
+        """, (deck_id, card_name, description, image_path))
+        card_id = cursor.lastrowid
+    conn.commit()
+    return card_id
+
+def get_card(deck_id: int, card_name: str):
+    """
+    Возвращает кортеж (description, image_path) или None, если нет такой карты.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT description, image_path 
+        FROM cards
+        WHERE deck_id=? AND card_name=?
+    """, (deck_id, card_name))
+    return cursor.fetchone()
+
+def get_all_decks():
+    """
+    Возвращает список всех названий колод (list[str]).
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM decks;")
+    rows = cursor.fetchall()
+    return [r[0] for r in rows]

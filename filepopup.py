@@ -62,15 +62,15 @@ class FileChooserPopup(Popup):
 
         if platform.system() == "Windows":
             drive_list = self.get_windows_drives()
-            top_panel.add_widget(
-                Spinner(
-                    text=self.get_current_drive(),
-                    values=drive_list,
-                    size_hint=(None, None),
-                    size=("100dp", "40dp"),
-                    on_text=self.on_drive_select
-                )
+            drive_spinner = Spinner(
+                text=self.get_current_drive(),
+                values=drive_list,
+                size_hint=(None, None),
+                size=("100dp", "40dp"),
             )
+            drive_spinner.bind(text=self.on_drive_select)  # Привязываем событие правильно
+            top_panel.add_widget(drive_spinner)
+
 
         root_layout.add_widget(top_panel)
 
@@ -103,7 +103,6 @@ class FileChooserPopup(Popup):
         if not drive.endswith("\\"):
             drive += "\\"
         self.file_chooser.path = drive
-        self.file_chooser.on_entry_added(self.file_chooser.path)  # Принудительно обновляем содержимое
         self.last_dir = drive
 
     def on_select(self, instance):

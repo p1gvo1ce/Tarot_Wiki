@@ -35,6 +35,7 @@
             Spinner:
                 text: root.selected_deck if root.selected_deck else "..."
                 values: root.available_decks
+                on_release: root.reset_spinners(self)
                 on_text: root.select_deck(self.text)
                 size_hint: (None, None)
                 size: (180, 40)
@@ -60,11 +61,13 @@
                     size_hint_x: None
                     width: self.texture_size[0] + 10
                 Spinner:
+                    id: spinner_arcana_view
                     text: "Выберите карту"
                     values: root.arcana_options
-                    on_text: root.on_card_select(self.text)
                     size_hint: (None, None)
                     size: (150, 40)
+                    on_release: root.reset_spinners(self)
+                    on_text: root.on_card_select(self.text)
 
             # Жезлы
             BoxLayout:
@@ -79,11 +82,13 @@
                     size_hint_x: None
                     width: self.texture_size[0] + 10
                 Spinner:
+                    id: spinner_wands_view
                     text: "Выберите карту"
                     values: root.wands_options
-                    on_text: root.on_card_select(self.text)
                     size_hint: (None, None)
                     size: (150, 40)
+                    on_release: root.reset_spinners(self)
+                    on_text: root.on_card_select(self.text)
 
             # Мечи
             BoxLayout:
@@ -98,11 +103,13 @@
                     size_hint_x: None
                     width: self.texture_size[0] + 10
                 Spinner:
+                    id: spinner_swords_view
                     text: "Выберите карту"
                     values: root.swords_options
-                    on_text: root.on_card_select(self.text)
                     size_hint: (None, None)
                     size: (150, 40)
+                    on_release: root.reset_spinners(self)
+                    on_text: root.on_card_select(self.text)
 
             # Чаши
             BoxLayout:
@@ -117,11 +124,13 @@
                     size_hint_x: None
                     width: self.texture_size[0] + 10
                 Spinner:
+                    id: spinner_cups_view
                     text: "Выберите карту"
                     values: root.cups_options
-                    on_text: root.on_card_select(self.text)
                     size_hint: (None, None)
                     size: (150, 40)
+                    on_release: root.reset_spinners(self)
+                    on_text: root.on_card_select(self.text)
 
             # Пентакли
             BoxLayout:
@@ -136,11 +145,13 @@
                     size_hint_x: None
                     width: self.texture_size[0] + 10
                 Spinner:
+                    id: spinner_pentacles_view
                     text: "Выберите карту"
                     values: root.pentacles_options
-                    on_text: root.on_card_select(self.text)
                     size_hint: (None, None)
                     size: (150, 40)
+                    on_release: root.reset_spinners(self)
+                    on_text: root.on_card_select(self.text)
 
         # Центральная часть (картинка + описание)
         BoxLayout:
@@ -228,13 +239,15 @@
                         size_hint_x: None
                         width: self.texture_size[0] + 10
                     Spinner:
+                        id: spinner_arcana
                         text: "Выберите карту"
                         values: root.arcana_options
-                        on_text: root.on_card_select(self.text)
                         size_hint: (None, None)
                         size: (150, 40)
+                        on_release: root.reset_spinners(self)
+                        on_text: root.on_card_select(self.text)
 
-                # Аналогично для Жезлы, Мечи, Чаши, Пентакли
+                # Жезлы
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint: (None, None)
@@ -247,12 +260,15 @@
                         size_hint_x: None
                         width: self.texture_size[0] + 10
                     Spinner:
+                        id: spinner_wands
                         text: "Выберите карту"
                         values: root.wands_options
-                        on_text: root.on_card_select(self.text)
                         size_hint: (None, None)
                         size: (150, 40)
+                        on_release: root.reset_spinners(self)
+                        on_text: root.on_card_select(self.text)
 
+                # Мечи
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint: (None, None)
@@ -265,12 +281,15 @@
                         size_hint_x: None
                         width: self.texture_size[0] + 10
                     Spinner:
+                        id: spinner_swords
                         text: "Выберите карту"
                         values: root.swords_options
-                        on_text: root.on_card_select(self.text)
                         size_hint: (None, None)
                         size: (150, 40)
+                        on_release: root.reset_spinners(self)
+                        on_text: root.on_card_select(self.text)
 
+                # Чаши
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint: (None, None)
@@ -283,12 +302,15 @@
                         size_hint_x: None
                         width: self.texture_size[0] + 10
                     Spinner:
+                        id: spinner_cups
                         text: "Выберите карту"
                         values: root.cups_options
-                        on_text: root.on_card_select(self.text)
                         size_hint: (None, None)
                         size: (150, 40)
+                        on_release: root.reset_spinners(self)
+                        on_text: root.on_card_select(self.text)
 
+                # Пентакли
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint: (None, None)
@@ -301,11 +323,13 @@
                         size_hint_x: None
                         width: self.texture_size[0] + 10
                     Spinner:
+                        id: spinner_pentacles
                         text: "Выберите карту"
                         values: root.pentacles_options
-                        on_text: root.on_card_select(self.text)
                         size_hint: (None, None)
                         size: (150, 40)
+                        on_release: root.reset_spinners(self)
+                        on_text: root.on_card_select(self.text)
 
         # 2. Центральная секция – описание
         BoxLayout:

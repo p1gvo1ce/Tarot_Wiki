@@ -76,3 +76,19 @@ class ViewerScreen(Screen):
         else:
             self.card_description = "Карта не найдена/не заполнена"
             self.card_image = ""
+
+    def reset_spinners(self, current_spinner):
+        spinners = []
+        try:
+            spinners = [
+                self.ids.spinner_arcana_view,
+                self.ids.spinner_wands_view,
+                self.ids.spinner_swords_view,
+                self.ids.spinner_cups_view,
+                self.ids.spinner_pentacles_view
+            ]
+        except Exception as e:
+            print(f"Ошибка при получении спиннеров: {e}")
+        for spinner in spinners:
+            if spinner and spinner != current_spinner:
+                spinner.text = "Выберите карту"

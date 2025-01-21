@@ -119,3 +119,18 @@ class EditorScreen(Screen):
         database.create_or_update_card(deck_id, self.card_name, self.card_description, self.image_path)
         print(f"Карта '{self.card_name}' сохранена в колоду '{self.deck_input}'!")
 
+    def reset_spinners(self, current_spinner):
+        spinners = []
+        try:
+            spinners = [
+                self.ids.spinner_arcana,
+                self.ids.spinner_wands,
+                self.ids.spinner_swords,
+                self.ids.spinner_cups,
+                self.ids.spinner_pentacles
+            ]
+        except Exception as e:
+            print(f"Ошибка при получении спиннеров: {e}")
+        for spinner in spinners:
+            if spinner and spinner != current_spinner:
+                spinner.text = "Выберите карту"

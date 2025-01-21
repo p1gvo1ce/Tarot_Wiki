@@ -1,4 +1,8 @@
 import kivy
+from kivy.core.window import Window
+
+Window.size = (1800, 850)
+
 kivy.require('2.1.0')
 
 from kivy.app import App

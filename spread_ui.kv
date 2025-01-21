@@ -1,0 +1,85 @@
+#:kivy 2.1.0
+
+<SpreadScreen>:
+    orientation: 'vertical'
+    padding: dp(10)
+    spacing: dp(10)
+
+    BoxLayout:
+        size_hint_y: None
+        height: dp(40)
+        Label:
+            text: "Выберите колоду:"
+            size_hint_x: None
+            width: dp(120)
+        Spinner:
+            id: deck_spinner
+            text: "Колода не выбрана"
+            values: root.decks
+            on_text: root.selected_deck = self.text
+
+    BoxLayout:
+        size_hint_y: None
+        height: dp(40)
+        Label:
+            text: "Выберите расклад:"
+            size_hint_x: None
+            width: dp(120)
+        Spinner:
+            id: spread_spinner
+            text: "Тип расклада"
+            values: root.spread_types
+            on_text: root.selected_spread = self.text
+
+    Label:
+        text: "Введите вопрос:"
+        size_hint_y: None
+        height: dp(30)
+
+    TextInput:
+        id: question_input
+        size_hint_y: None
+        height: dp(100)
+        multiline: True
+
+    BoxLayout:
+        size_hint_y: None
+        height: dp(40)
+        spacing: dp(10)
+        Button:
+            text: "Провести расклад"
+            on_release: root.perform_spread(question_input.text)
+        Button:
+            text: "Анализировать расклад"
+            on_release: root.start_analysis(question_input.text)
+
+    Label:
+        id: instruction_label
+        markup: True
+        size_hint_y: None
+        height: self.texture_size[1]
+        text: ""
+
+    ScrollView:
+        size_hint_y: 0.5
+        do_scroll_x: False
+        GridLayout:
+            id: cards_layout
+            cols: 3
+            size_hint_y: None
+            height: self.minimum_height
+            # убрать или скорректировать эти строки:
+            # row_default_height: dp(150)
+            # row_force_default: True
+            spacing: dp(5)
+
+    ScrollView:
+        size_hint_y: 1
+        do_scroll_x: False
+        Label:
+            id: result_label
+            markup: True
+            text: root.result_text
+            size_hint_y: None
+            text_size: self.width, None
+            height: self.texture_size[1]

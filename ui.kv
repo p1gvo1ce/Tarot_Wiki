@@ -169,12 +169,14 @@
                 size_hint_x: 0.6
                 bar_width: 10
                 Label:
-                    markup: True  # Включаем поддержку разметки
+                    markup: True           # Убедитесь, что поддержка разметки включена
                     text: root.card_description
-                    color: 1,1,1,1
+                    # Удалите или закомментируйте следующую строку:
+                    # color: 1,1,1,1
                     text_size: self.width, None
                     size_hint_y: None
                     height: self.texture_size[1]
+
 
         # Нижняя кнопка
         BoxLayout:

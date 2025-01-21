@@ -5,17 +5,49 @@ viewer_screen.py
 """
 
 import re
+from io import StringIO
+
 from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, ListProperty
 import database
 
+from pygments import lex
+from pygments.lexers import guess_lexer, TextLexer
+from pygments.formatter import Formatter
+from pygments.styles import get_style_by_name
+from pygments.token import Token
+
+
 def markdown_to_kivy(markdown_text):
     """
-    Простейший конвертер Markdown в Kivy-разметку, включая заголовки, жирный курсив и списки.
+    Простейший конвертер Markdown в Kivy-разметку, включая заголовки, жирный курсив,
+    списки, горизонтальные разделители, вставки кода и цитаты.
     """
     text = markdown_text or ""
-    # Заголовки: преобразование линий, начинающихся с #.
-    # Чем больше символов #, тем меньше размер шрифта.
+
+    # Обработка блоков кода (``` ... ```)
+    def repl_code_block(match):
+        code_content = match.group(1)
+        code_content = code_content.replace('[', '\\[').replace(']', '\\]')
+        return f"[color=#AAAAAA]{code_content}[/color]"
+
+    text = re.sub(r'```(.*?)```', repl_code_block, text, flags=re.DOTALL)
+
+    # Обработка встроенного кода (`...`)
+    def repl_inline_code(match):
+        code_text = match.group(1)
+        code_text = code_text.replace('[', '\\[').replace(']', '\\]')
+        return f"[color=#111111]{code_text}[/color]"
+
+    text = re.sub(r'`([^`]+?)`', repl_inline_code, text)
+
+    # Цитаты: строки, начинающиеся с "> "
+    text = re.sub(r'(?m)^> (.+)$', r'[i][color=gray]> \1[/color][/i]', text)
+
+    # Горизонтальные разделители: строки с тремя и более дефисами
+    text = re.sub(r'(?m)^---+$', r'[color=gray]──────────────────────────[/color]', text)
+
+    # Заголовки: преобразование строк, начинающихся с #
     text = re.sub(r'(?m)^# (.+)$', r'[size=34][b]\1[/b][/size]', text)
     text = re.sub(r'(?m)^## (.+)$', r'[size=30][b]\1[/b][/size]', text)
     text = re.sub(r'(?m)^### (.+)$', r'[size=26][b]\1[/b][/size]', text)
@@ -23,12 +55,13 @@ def markdown_to_kivy(markdown_text):
     text = re.sub(r'(?m)^##### (.+)$', r'[size=18][b]\1[/b][/size]', text)
     text = re.sub(r'(?m)^###### (.+)$', r'[size=16][b]\1[/b][/size]', text)
 
-    # Bold: **text** → [b]text[/b]
+    # Жирный текст: **text**
     text = re.sub(r'\*\*(.+?)\*\*', r'[b]\1[/b]', text)
-    # Italic: *text* → [i]text[/i]
+    # Курсив: *text*
     text = re.sub(r'\*(.+?)\*', r'[i]\1[/i]', text)
-    # Bullet lists: строки, начинающиеся с "-" → "• "
+    # Маркированные списки: строки, начинающиеся с "- "
     text = re.sub(r'(?m)^- (.+)', r'• \1', text)
+
     return text
 
 class ViewerScreen(Screen):

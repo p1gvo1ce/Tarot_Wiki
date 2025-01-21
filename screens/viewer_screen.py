@@ -4,9 +4,32 @@ viewer_screen.py
 Экран для просмотра карт.
 """
 
+import re
 from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, ListProperty
 import database
+
+def markdown_to_kivy(markdown_text):
+    """
+    Простейший конвертер Markdown в Kivy-разметку, включая заголовки, жирный курсив и списки.
+    """
+    text = markdown_text or ""
+    # Заголовки: преобразование линий, начинающихся с #.
+    # Чем больше символов #, тем меньше размер шрифта.
+    text = re.sub(r'(?m)^# (.+)$', r'[size=34][b]\1[/b][/size]', text)
+    text = re.sub(r'(?m)^## (.+)$', r'[size=30][b]\1[/b][/size]', text)
+    text = re.sub(r'(?m)^### (.+)$', r'[size=26][b]\1[/b][/size]', text)
+    text = re.sub(r'(?m)^#### (.+)$', r'[size=22][b]\1[/b][/size]', text)
+    text = re.sub(r'(?m)^##### (.+)$', r'[size=18][b]\1[/b][/size]', text)
+    text = re.sub(r'(?m)^###### (.+)$', r'[size=16][b]\1[/b][/size]', text)
+
+    # Bold: **text** → [b]text[/b]
+    text = re.sub(r'\*\*(.+?)\*\*', r'[b]\1[/b]', text)
+    # Italic: *text* → [i]text[/i]
+    text = re.sub(r'\*(.+?)\*', r'[i]\1[/i]', text)
+    # Bullet lists: строки, начинающиеся с "-" → "• "
+    text = re.sub(r'(?m)^- (.+)', r'• \1', text)
+    return text
 
 class ViewerScreen(Screen):
     selected_deck = StringProperty("")
@@ -55,10 +78,8 @@ class ViewerScreen(Screen):
         self.card_image = ""
         self.card_description = ""
 
-
     def on_card_select(self, card_name: str):
         if not self.selected_deck:
-            # Устанавливаем сообщение в описание карты
             self.card_description = "Сначала нужно выбрать колоду, а потом карту."
             print("Сначала выберите колоду!")
             return
@@ -71,7 +92,8 @@ class ViewerScreen(Screen):
         row = database.get_card(deck_id, card_name)
         if row:
             desc, img_path = row
-            self.card_description = desc if desc else "Нет описания"
+            # Преобразование описания из Markdown в разметку Kivy
+            self.card_description = markdown_to_kivy(desc) if desc else "Нет описания"
             self.card_image = img_path if img_path else ""
         else:
             self.card_description = "Карта не найдена/не заполнена"

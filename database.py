@@ -53,7 +53,12 @@ def create_deck(deck_name: str) -> int:
     cursor = conn.cursor()
     cursor.execute("INSERT OR IGNORE INTO decks(name) VALUES(?);", (deck_name,))
     conn.commit()
-    return cursor.lastrowid
+    # Всегда возвращаем корректный deck_id
+    deck_id = get_deck_id(deck_name)
+    if deck_id is None:
+        raise ValueError(f"Не удалось создать или найти колоду с именем '{deck_name}'.")
+    return deck_id
+
 
 def get_deck_id(deck_name: str) -> Optional[int]:
     conn = get_connection()

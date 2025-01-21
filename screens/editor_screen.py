@@ -109,12 +109,13 @@ class EditorScreen(Screen):
             print("Карта не выбрана!")
             return
 
-        # Создаём/находим колоду
-        row_id = database.create_deck(self.deck_input.strip())
-        if row_id == 0:
-            deck_id = database.get_deck_id(self.deck_input.strip())
-        else:
-            deck_id = row_id
+        try:
+            # Создаём/находим колоду и получаем корректный deck_id
+            deck_id = database.create_deck(self.deck_input.strip())
+        except ValueError as e:
+            print(e)
+            return
 
         database.create_or_update_card(deck_id, self.card_name, self.card_description, self.image_path)
         print(f"Карта '{self.card_name}' сохранена в колоду '{self.deck_input}'!")
+

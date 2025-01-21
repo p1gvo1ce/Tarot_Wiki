@@ -15,6 +15,7 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.properties import ObjectProperty, StringProperty
+from PIL import ImageGrab, Image
 
 import app_config
 
@@ -52,10 +53,16 @@ class FileChooserPopup(Popup):
         self.title = "Выберите файл"
         self.size_hint = (0.9, 0.9)
 
+        # Получаем конфигурацию и путь последнего каталога
         config = app_config.load_config()
         self.last_dir = config.get("last_dir", "C:\\" if platform.system() == "Windows" else "/")
 
         root_layout = BoxLayout(orientation='vertical', spacing=5)
+
+        # Получаем конфигурацию и путь последнего каталога
+        config = app_config.load_config()
+        self.last_dir = config.get("last_dir", "C:\\" if platform.system() == "Windows" else "/")
+
 
         # ---------- Верхняя панель ----------
         top_panel = BoxLayout(size_hint_y=None, height='40dp', spacing=5)
@@ -86,15 +93,43 @@ class FileChooserPopup(Popup):
         btn_layout = BoxLayout(size_hint_y=None, height='40dp', spacing=5)
         select_btn = Button(text="Выбрать")
         cancel_btn = Button(text="Отмена")
+        paste_btn = Button(text="Вставить из буфера")  # Новая кнопка
 
         select_btn.bind(on_release=self.on_select)
         cancel_btn.bind(on_release=self.dismiss)
+        paste_btn.bind(on_release=self.on_paste_from_clipboard)  # Привязываем метод для вставки
 
         btn_layout.add_widget(select_btn)
         btn_layout.add_widget(cancel_btn)
+        btn_layout.add_widget(paste_btn)  # Добавляем кнопку в панель
 
         root_layout.add_widget(btn_layout)
         self.add_widget(root_layout)
+
+    def on_paste_from_clipboard(self, instance):
+        """
+        Обработка вставки изображения из буфера обмена.
+        """
+        try:
+            image = ImageGrab.grabclipboard()
+            if isinstance(image, Image.Image):
+                target_dir = os.path.join("resources", "images")
+                if not os.path.exists(target_dir):
+                    os.makedirs(target_dir)
+
+                new_filename = "вставленное_изображение.png"
+                new_path = os.path.join(target_dir, new_filename)
+                image.save(new_path, "PNG")
+
+                print(f"Изображение вставлено и сохранено: {new_path}")
+                if self.select_callback:
+                    self.select_callback(new_path)
+
+                self.dismiss()
+            else:
+                print("Буфер обмена не содержит изображение.")
+        except Exception as e:
+            print(f"Ошибка вставки изображения: {e}")
 
     def on_drive_select(self, spinner, drive):
         """

@@ -55,8 +55,11 @@ class ViewerScreen(Screen):
         self.card_image = ""
         self.card_description = ""
 
+
     def on_card_select(self, card_name: str):
         if not self.selected_deck:
+            # Устанавливаем сообщение в описание карты
+            self.card_description = "Сначала нужно выбрать колоду, а потом карту."
             print("Сначала выберите колоду!")
             return
 

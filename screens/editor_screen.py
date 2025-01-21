@@ -81,6 +81,8 @@ class EditorScreen(Screen):
     def on_card_select(self, card_name: str):
         self.card_name = card_name
         if not self.deck_input.strip():
+            # Устанавливаем сообщение в поле описания
+            self.card_description = "Сначала введите название колоды."
             print("Сначала введите название колоды.")
             return
 
